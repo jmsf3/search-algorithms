@@ -1,9 +1,18 @@
+let world;
+
 function setup()
 {
-  createCanvas(400, 400);
+  width = height = 600;
+  createCanvas(width, height);
+
+  let chunkSize = 8;
+  let rows = ceil(height / chunkSize);
+  let cols = ceil(width / chunkSize);
+
+  world = new World(rows, cols, chunkSize);
 }
 
 function draw()
 {
-  background(220);
+  world.run();
 }
