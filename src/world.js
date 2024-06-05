@@ -4,10 +4,12 @@ class World
   {
     this.rows = rows;
     this.cols = cols;
-
     this.chunkSize = chunkSize;
+
     this.world = this.generateWorld();
-    
+    this.agent = this.generateAgent();
+    this.target = this.generateTarget();
+
     this.show();
   }
   
@@ -29,6 +31,34 @@ class World
     return world;
   }
   
+  generateAgent()
+  {
+    let x = floor(random(0, this.cols));
+    let y = floor(random(0, this.rows));
+
+    while (this.world[y][x].type == 'mountain')
+    {
+      x = floor(random(0, this.cols));
+      y = floor(random(0, this.rows));
+    }
+
+    return new Agent(x, y, this.chunkSize);
+  }
+
+  generateTarget()
+  {
+    let x = floor(random(0, this.cols));
+    let y = floor(random(0, this.rows));
+
+    while (this.world[y][x].type == 'mountain')
+    {
+      x = floor(random(0, this.cols));
+      y = floor(random(0, this.rows));
+    }
+
+    return new Target(x, y, this.chunkSize);
+  }
+
   randomTerrain(x, y)
   {
     let zoomX = map(this.cols, 1, width, 1, 200);
@@ -61,6 +91,7 @@ class World
   
   run()
   {
-
+    this.agent.show();
+    this.target.show();
   }
 }
