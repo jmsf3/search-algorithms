@@ -10,7 +10,7 @@ class World
     this.agent = this.generateAgent();
     this.target = this.generateTarget();
 
-    this.searchType = 'bfs';
+    this.searchType = null;
     this.start = this.world[this.agent.y][this.agent.x];
     this.goal = this.world[this.target.y][this.target.x];
 
@@ -28,6 +28,10 @@ class World
 
     this.goalFound = false;
     this.path = [];
+    
+    this.updated = false;
+    this.lastUpdated = 0;
+    this.current = this.start;
   }
 
   generateWorld()
@@ -298,6 +302,33 @@ class World
     }
   }
 
+  seekTarget()
+  {
+    if (this.path.length != 0)
+    {
+      const delay = 20;
+
+      if (!this.updated)
+      {
+        this.current = this.path.shift();
+
+        this.agent.update(this.current.x,this.current.y);
+        this.updated = true;
+
+        this.lastUpdated = millis();
+      }
+      else if (millis() - this.lastUpdated > delay * this.current.cost)
+      {
+          this.updated = false;
+      }
+    }
+  }
+
+  targetReached()
+  {
+    return this.agent.x == this.target.x && this.agent.y == this.target.y;
+  }
+
   show()
   {
     for (let y = 0; y < this.rows; y++)
@@ -312,18 +343,29 @@ class World
   run()
   {
     this.search();
-
     this.show();
-    this.agent.show();
-    this.target.show();
 
     this.showFrontier();
     this.showReached();
     this.showPath();
+
+    this.agent.show();
+    this.target.show();
+
+    this.seekTarget();
+
+    if (this.targetReached())
+    {
+      this.target = this.generateTarget();
+      this.reset();
+    }
   }
 
   reset()
   {
+    this.start = this.world[this.agent.y][this.agent.x];
+    this.goal = this.world[this.target.y][this.target.x];
+
     this.frontier = [];
     this.frontier.push(this.start);
 
