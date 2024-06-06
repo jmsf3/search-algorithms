@@ -25,6 +25,10 @@ class World
 
     this.goalFound = false;
     this.path = [];
+    
+    this.updated = false;
+    this.lastUpdated = 0;
+    this.current = this.start;
   }
 
   generateWorld()
@@ -246,6 +250,25 @@ class World
     }
   }
 
+
+  reachFood()
+  {
+    if(this.path.length != 0){
+      const delay = 100;
+      if(!this.updated){
+        this.current = this.path.shift();
+        this.agent.update(this.current.x,this.current.y);
+        this.updated = true;
+        this.lastUpdated = millis();
+      }
+      else{
+        if(millis() - this.lastUpdated > delay*this.current.cost){
+          this.updated = false;
+        }
+      }
+    }
+  }
+
   show()
   {
     for (let y = 0; y < this.rows; y++)
@@ -268,6 +291,7 @@ class World
     this.showFrontier();
     this.showReached();
     this.showPath();
+    this.reachFood();
   }
 
   reset()
