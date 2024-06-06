@@ -159,7 +159,28 @@ class World
 
   dfs()
   {
-    // TODO
+    let n = this.frontier.length;
+
+    for (let i = 0; !this.goalFound && i < 4; i++)
+    {
+      let current = this.frontier.pop();
+
+      if (current == this.goal)
+      {
+        this.goalFound = true;
+        this.setPath();
+      }
+
+      for (let next of this.neighbors(current))
+      {
+        if (!this.reached.has(next))
+        {
+          this.frontier.push(next);
+          this.reached.add(next);
+          this.cameFrom.set(next, current);
+        }
+      }
+    }
   }
 
   ucs()
