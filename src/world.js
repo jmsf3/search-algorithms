@@ -28,6 +28,8 @@ class World
 
     this.goalFound = false;
     this.path = [];
+
+    this.foodCount = 0;
   }
 
   generateWorld()
@@ -225,6 +227,19 @@ class World
   {
     // TODO
   }
+  
+  manageFood()
+  {
+    if(this.agent.x == this.goal.x && this.agent.y == this.goal.y){
+      this.foodCount += 1;
+      this.target = this.generateTarget();
+      this.reset();
+    }
+    textSize(30);
+    textAlign(CENTER, CENTER);
+    fill('yellow');
+    text(`FOOD COUNT: ${this.foodCount}`, 130, 30);
+  }
 
   search()
   {
@@ -320,10 +335,14 @@ class World
     this.showFrontier();
     this.showReached();
     this.showPath();
+    this.manageFood();
   }
 
   reset()
   {
+    this.goal = this.world[this.target.y][this.target.x];
+    this.start = this.world[this.agent.y][this.agent.x];
+    
     this.frontier = [];
     this.frontier.push(this.start);
 
@@ -332,9 +351,6 @@ class World
 
     this.cameFrom = new Map();
     this.cameFrom.set(this.start, null);
-
-    this.costSoFar = new Map();
-    this.costSoFar.set(this.start, 0);
 
     this.goalFound = false;
     this.path = [];
