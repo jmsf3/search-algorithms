@@ -10,12 +10,20 @@ class World
     this.agent = this.generateAgent();
     this.target = this.generateTarget();
 
-    this.searchType = 'bfs';
+    this.searchType = 'astar';
     this.start = this.world[this.agent.y][this.agent.x];
     this.goal = this.world[this.target.y][this.target.x];
 
     this.frontier = [];
     this.frontier.push(this.start);
+    
+    this.frontStar = [];
+    this.frontStar.push({
+      element: this.start,
+      cost: 0,
+      estimate: 0
+    });
+
 
     this.reached = new Set();
     this.reached.add(this.start);
@@ -169,9 +177,49 @@ class World
     // TODO
   }
 
-  astar()
-  {
-    // TODO
+  heuristic(node) {
+    return Math.abs(node.x - this.target.x) + Math.abs(node.y - this.target.y);
+  }
+
+  astar() {
+    //o loop continua enquanto houver nós na fronteira a serem explorados
+    let n = this.frontStar.length;
+
+    for (let i = 0; !this.goalFound && i < n/2; i++){ 
+        // a fronteira é ordenada com base na estimativa de custo total 
+        this.frontStar.sort((a, b) => a.estimate - b.estimate);
+
+        //escolhendo o nó de menor custo
+        let current = this.frontStar.shift().element;
+
+        //checa se já chegou no objetivo
+        if (current === this.goal) {
+          this.goalFound = true;
+          this.setPath();
+          break;
+        }
+
+        //add o nó aos explorados 
+        this.reached.add(current)
+
+
+        //gera possibilidades de vizinhos com base na pos atual
+        let neighbors = this.neighbors(current)
+
+        for (let i=0 ; i< neighbors.length; i++){
+          let next = neighbors[i];
+          let cost = next.cost + current.cost;
+
+          if(!this.reached.has(next)){
+            this.frontStar.push({
+              element: next,
+              cost: cost, 
+              estimate: cost + this.heuristic(next) });
+              this.reached.add(next)
+              this.cameFrom.set(next, current);
+          }
+        }
+      }
   }
 
   search()
@@ -217,6 +265,7 @@ class World
       square(X, Y, this.chunkSize);
     }
   }
+  
 
   showReached()
   {
@@ -260,7 +309,7 @@ class World
   run()
   {
     this.search();
-
+   
     this.show();
     this.agent.show();
     this.target.show();
