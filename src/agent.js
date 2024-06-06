@@ -7,7 +7,8 @@ class Agent
     this.size = size;
   }
 
-  update(x, y) {
+  update(x, y)
+  {
     this.x = x
     this.y = y
   }
@@ -22,5 +23,4 @@ class Agent
     
     square(X, Y, this.size);
   }
-
 }
