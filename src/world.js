@@ -23,6 +23,9 @@ class World
     this.cameFrom = new Map();
     this.cameFrom.set(this.start, null);
 
+    this.costSoFar = new Map();
+    this.costSoFar.set(this.start, 0);
+
     this.goalFound = false;
     this.path = [];
   }
@@ -161,7 +164,35 @@ class World
 
   ucs()
   {
-    // TODO
+    let n = this.frontier.length;
+
+    for (let i = 0; !this.goalFound && i < n; i++)
+    {
+      let current = this.frontier.shift();
+
+      if (current == this.goal)
+      {
+        this.goalFound = true;
+        this.setPath();
+        break;
+      }
+
+      for (let next of this.neighbors(current))
+      {
+        let nextCost = this.world[next.y][next.x].cost;
+       
+        let newCost = this.costSoFar.get(current) + nextCost;
+
+        if (!this.costSoFar.has(next) || newCost < this.costSoFar.get(next))
+        {
+          this.frontier.push(next);
+          this.costSoFar.set(next, newCost);
+          this.frontier.sort((a, b) => this.costSoFar.get(a) - this.costSoFar.get(b));
+          this.reached.add(next);
+          this.cameFrom.set(next, current);
+        }
+      }
+    }
   }
 
   greedy()
@@ -280,6 +311,9 @@ class World
 
     this.cameFrom = new Map();
     this.cameFrom.set(this.start, null);
+
+    this.costSoFar = new Map();
+    this.costSoFar.set(this.start, 0);
 
     this.goalFound = false;
     this.path = [];
