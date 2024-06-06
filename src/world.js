@@ -32,6 +32,8 @@ class World
     this.updated = false;
     this.lastUpdated = 0;
     this.current = this.start;
+
+    this.foodCount = 0;
   }
 
   generateWorld()
@@ -340,6 +342,19 @@ class World
     }
   }
 
+  manageFood()
+  {
+    if (this.targetReached()){
+      this.foodCount += 1;
+      this.target = this.generateTarget();
+      this.reset();
+    }
+    textSize(30);
+    textAlign(CENTER, CENTER);
+    fill('yellow');
+    text(`FOOD COUNT: ${this.foodCount}`, 130, 30);
+  }
+
   run()
   {
     this.search();
@@ -353,12 +368,8 @@ class World
     this.target.show();
 
     this.seekTarget();
+    this.manageFood();
 
-    if (this.targetReached())
-    {
-      this.target = this.generateTarget();
-      this.reset();
-    }
   }
 
   reset()
@@ -380,5 +391,8 @@ class World
 
     this.goalFound = false;
     this.path = [];
+
+    this.updated = false;
+    this.current = this.start;
   }
 }
