@@ -33,7 +33,7 @@ class World
     this.lastUpdated = 0;
     this.current = this.start;
 
-    this.foodCount = 0;
+    this.score = 0;
   }
 
   generateWorld()
@@ -231,19 +231,6 @@ class World
   {
     // TODO
   }
-  
-  manageFood()
-  {
-    if(this.agent.x == this.goal.x && this.agent.y == this.goal.y){
-      this.foodCount += 1;
-      this.target = this.generateTarget();
-      this.reset();
-    }
-    textSize(30);
-    textAlign(CENTER, CENTER);
-    fill('yellow');
-    text(`FOOD COUNT: ${this.foodCount}`, 130, 30);
-  }
 
   search()
   {
@@ -343,6 +330,20 @@ class World
   {
     return this.agent.x == this.target.x && this.agent.y == this.target.y;
   }
+  
+  manageScore()
+  {
+    if (this.targetReached())
+    {
+      this.score += 1;
+      this.target = this.generateTarget();
+      this.reset();
+    }
+
+    textSize(32);
+    fill('black');
+    text(`SCORE: ${this.score}`, 5, 30);
+  }
 
   show()
   {
@@ -353,19 +354,6 @@ class World
         this.world[y][x].show();
       }
     }
-  }
-
-  manageFood()
-  {
-    if (this.targetReached()){
-      this.foodCount += 1;
-      this.target = this.generateTarget();
-      this.reset();
-    }
-    textSize(30);
-    textAlign(CENTER, CENTER);
-    fill('yellow');
-    text(`FOOD COUNT: ${this.foodCount}`, 130, 30);
   }
 
   run()
@@ -381,8 +369,7 @@ class World
     this.target.show();
 
     this.seekTarget();
-    this.manageFood();
-
+    this.manageScore();
   }
 
   reset()
@@ -398,6 +385,9 @@ class World
 
     this.cameFrom = new Map();
     this.cameFrom.set(this.start, null);
+
+    this.costSoFar = new Map();
+    this.costSoFar.set(this.start, 0);
 
     this.goalFound = false;
     this.path = [];

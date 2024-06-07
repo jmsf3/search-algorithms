@@ -20,6 +20,15 @@ function draw()
 function keyPressed()
 {
   const searchKeys = ['b', 'd', 'u', 'g', 'a'];
-  if (searchKeys.includes(key)) world.setSearch(key);
-  if (key == 'r') world.reset();
+  
+  if (searchKeys.includes(key))
+  {
+    world.setSearch(key);
+  }
+  
+  if (key == 'r')
+  {
+    world.reset();
+    world.searchType = null;
+  }
 }

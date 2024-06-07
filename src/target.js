@@ -9,7 +9,7 @@ class Target
   
   show() 
   {
-    fill('red');
+    fill(255, 0, 0);
     noStroke();
     
     let X = this.x * this.size;
