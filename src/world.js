@@ -222,9 +222,35 @@ class World
     }
   }
 
+  heuristic(a, b)
+  {
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+  }
+
   greedy()
   {
-    // TODO
+    if (!this.goalFound && this.frontier.length > 0)
+    {
+      let current = this.frontier.shift();
+
+      if (current == this.goal)
+      {
+        this.goalFound = true;
+        this.setPath();
+      }
+
+      for (let next of this.neighbors(current))
+      {
+        if (!this.cameFrom.has(next))
+        {
+          this.frontier.push(next);
+          this.costSoFar.set(next, this.heuristic(next, this.goal));
+          this.frontier.sort((a, b) => this.costSoFar.get(a) - this.costSoFar.get(b));
+          this.reached.add(next);
+          this.cameFrom.set(next, current);
+        }
+      }
+    }
   }
 
   astar()
@@ -275,7 +301,7 @@ class World
       square(X, Y, this.chunkSize);
     }
   }
-
+  
   showReached()
   {
     for (let chunk of this.reached)
