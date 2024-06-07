@@ -16,15 +16,15 @@ class World
 
     this.frontier = [];
     this.frontier.push(this.start);
-    
-    this.front = [];
-    this.front.push({ element: this.start, heuristic: 0 });
 
     this.reached = new Set();
     this.reached.add(this.start);
 
     this.cameFrom = new Map();
     this.cameFrom.set(this.start, null);
+
+    this.costSoFar = new Map();
+    this.costSoFar.set(this.start, 0);
 
     this.goalFound = false;
     this.path = [];
@@ -166,28 +166,31 @@ class World
   {
     // TODO
   }
-  heuristic(node) {
-    // Distância Manhattan como heurística
-    return Math.abs(node.x - this.target.x) + Math.abs(node.y - this.target.y);
+
+  heuristic(a, b)
+  {
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
   }
+
   greedy()
   {
-    if (this.front.length > 0 && !this.goalFound) {
-      
-      this.front.sort((a, b) => a.heuristic - b.heuristic);
+    if (!this.goalFound && this.frontier.length > 0)
+    {
+      let current = this.frontier.shift();
 
-      let current = this.front.shift().element;
-      if (current == this.goal) {
+      if (current == this.goal)
+      {
         this.goalFound = true;
         this.setPath();
-        return;
       }
-      let neighbors = this.neighbors(current);
-       
-      for (let j = 0; j < neighbors.length; j++) {
-        let next = neighbors[j];
-        if (!this.reached.has(next)) {
-          this.front.push({ element: next, heuristic: this.heuristic(next) });
+
+      for (let next of this.neighbors(current))
+      {
+        if (!this.cameFrom.has(next))
+        {
+          this.frontier.push(next);
+          this.costSoFar.set(next, this.heuristic(next, this.goal));
+          this.frontier.sort((a, b) => this.costSoFar.get(a) - this.costSoFar.get(b));
           this.reached.add(next);
           this.cameFrom.set(next, current);
         }
@@ -243,21 +246,6 @@ class World
       square(X, Y, this.chunkSize);
     }
   }
-
-showFront()
-  {
-    for (let chunk of this.front)
-    {
-      print(chunk);
-      fill(255, 100);
-      noStroke();
-
-      let X = chunk.element.x * this.chunkSize;
-      let Y = chunk.element.y * this.chunkSize;
-
-      square(X, Y, this.chunkSize);
-    }
-  }
   
   showReached()
   {
@@ -307,7 +295,6 @@ showFront()
     this.target.show();
 
     this.showFrontier();
-    this.showFront();
     this.showReached();
     this.showPath();
   }
