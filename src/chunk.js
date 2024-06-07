@@ -15,7 +15,7 @@ class Chunk
     else if (this.type == 'water')
       this.cost = 10;
     else if (this.type == 'mountain')
-      this.cost = Infinity
+      this.cost = Infinity;
   }
   
   show()

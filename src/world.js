@@ -10,7 +10,7 @@ class World
     this.agent = this.generateAgent();
     this.target = this.generateTarget();
 
-    this.searchType = 'astar';
+    this.searchType = null;
     this.start = this.world[this.agent.y][this.agent.x];
     this.goal = this.world[this.target.y][this.target.x];
 
@@ -28,6 +28,12 @@ class World
 
     this.goalFound = false;
     this.path = [];
+    
+    this.updated = false;
+    this.lastUpdated = 0;
+    this.current = this.start;
+
+    this.score = 0;
   }
 
   generateWorld()
@@ -159,17 +165,92 @@ class World
 
   dfs()
   {
-    // TODO
+    let n = this.frontier.length;
+
+    for (let i = 0; !this.goalFound && i < 4; i++)
+    {
+      let current = this.frontier.pop();
+
+      if (current == this.goal)
+      {
+        this.goalFound = true;
+        this.setPath();
+      }
+
+      for (let next of this.neighbors(current))
+      {
+        if (!this.reached.has(next))
+        {
+          this.frontier.push(next);
+          this.reached.add(next);
+          this.cameFrom.set(next, current);
+        }
+      }
+    }
   }
 
   ucs()
   {
-    // TODO
+    let n = this.frontier.length;
+
+    for (let i = 0; !this.goalFound && i < n; i++)
+    {
+      let current = this.frontier.shift();
+
+      if (current == this.goal)
+      {
+        this.goalFound = true;
+        this.setPath();
+        break;
+      }
+
+      for (let next of this.neighbors(current))
+      {
+        let nextCost = this.world[next.y][next.x].cost;
+       
+        let newCost = this.costSoFar.get(current) + nextCost;
+
+        if (!this.costSoFar.has(next) || newCost < this.costSoFar.get(next))
+        {
+          this.frontier.push(next);
+          this.costSoFar.set(next, newCost);
+          this.frontier.sort((a, b) => this.costSoFar.get(a) - this.costSoFar.get(b));
+          this.reached.add(next);
+          this.cameFrom.set(next, current);
+        }
+      }
+    }
+  }
+
+  heuristic(a, b)
+  {
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
   }
 
   greedy()
   {
-    // TODO
+    if (!this.goalFound && this.frontier.length > 0)
+    {
+      let current = this.frontier.shift();
+
+      if (current == this.goal)
+      {
+        this.goalFound = true;
+        this.setPath();
+      }
+
+      for (let next of this.neighbors(current))
+      {
+        if (!this.cameFrom.has(next))
+        {
+          this.frontier.push(next);
+          this.costSoFar.set(next, this.heuristic(next, this.goal));
+          this.frontier.sort((a, b) => this.costSoFar.get(a) - this.costSoFar.get(b));
+          this.reached.add(next);
+          this.cameFrom.set(next, current);
+        }
+      }
+    }
   }
 
   heuristic(a, b)
@@ -254,7 +335,6 @@ class World
     }
   }
   
-
   showReached()
   {
     for (let chunk of this.reached)
@@ -283,6 +363,47 @@ class World
     }
   }
 
+  seekTarget()
+  {
+    if (this.path.length != 0)
+    {
+      const delay = 20;
+
+      if (!this.updated)
+      {
+        this.current = this.path.shift();
+
+        this.agent.update(this.current.x,this.current.y);
+        this.updated = true;
+
+        this.lastUpdated = millis();
+      }
+      else if (millis() - this.lastUpdated > delay * this.current.cost)
+      {
+          this.updated = false;
+      }
+    }
+  }
+
+  targetReached()
+  {
+    return this.agent.x == this.target.x && this.agent.y == this.target.y;
+  }
+  
+  manageScore()
+  {
+    if (this.targetReached())
+    {
+      this.score += 1;
+      this.target = this.generateTarget();
+      this.reset();
+    }
+
+    textSize(32);
+    fill('black');
+    text(`SCORE: ${this.score}`, 5, 30);
+  }
+
   show()
   {
     for (let y = 0; y < this.rows; y++)
@@ -297,18 +418,24 @@ class World
   run()
   {
     this.search();
-   
     this.show();
-    this.agent.show();
-    this.target.show();
 
     this.showFrontier();
     this.showReached();
     this.showPath();
+
+    this.agent.show();
+    this.target.show();
+
+    this.seekTarget();
+    this.manageScore();
   }
 
   reset()
   {
+    this.start = this.world[this.agent.y][this.agent.x];
+    this.goal = this.world[this.target.y][this.target.x];
+
     this.frontier = [];
     this.frontier.push(this.start);
 
@@ -318,7 +445,13 @@ class World
     this.cameFrom = new Map();
     this.cameFrom.set(this.start, null);
 
+    this.costSoFar = new Map();
+    this.costSoFar.set(this.start, 0);
+
     this.goalFound = false;
     this.path = [];
+
+    this.updated = false;
+    this.current = this.start;
   }
 }
