@@ -16,7 +16,7 @@ class World
 
     this.frontier = [];
     this.frontier.push(this.start);
-
+    
     this.reached = new Set();
     this.reached.add(this.start);
 
@@ -253,9 +253,42 @@ class World
     }
   }
 
+  heuristic(a, b)
+  {
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+  }
+
   astar()
   {
-    // TODO
+    let n = this.frontier.length;
+
+    for (let i = 0; !this.goalFound && i < n; i++)
+    {
+      let current = this.frontier.shift();
+
+      if (current == this.goal)
+      {
+        this.goalFound = true;
+        this.setPath();
+        break;
+      }
+
+      for (let next of this.neighbors(current))
+      {
+        let nextCost = this.world[next.y][next.x].cost;
+        let newCost = this.costSoFar.get(current) + nextCost;
+        let priority = newCost + this.heuristic(next, this.goal); 
+
+        if (!this.reached.has(next))
+        {
+          this.frontier.push(next);
+          this.costSoFar.set(next, priority);
+          this.frontier.sort((a, b) => this.costSoFar.get(a) - this.costSoFar.get(b));
+          this.reached.add(next);
+          this.cameFrom.set(next, current);
+        }
+      }
+    }
   }
 
   search()
