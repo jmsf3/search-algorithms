@@ -32,6 +32,8 @@ class World
     this.updated = false;
     this.lastUpdated = 0;
     this.current = this.start;
+
+    this.score = 0;
   }
 
   generateWorld()
@@ -328,6 +330,20 @@ class World
   {
     return this.agent.x == this.target.x && this.agent.y == this.target.y;
   }
+  
+  manageScore()
+  {
+    if (this.targetReached())
+    {
+      this.score += 1;
+      this.target = this.generateTarget();
+      this.reset();
+    }
+
+    textSize(32);
+    fill('black');
+    text(`SCORE: ${this.score}`, 5, 30);
+  }
 
   show()
   {
@@ -353,12 +369,7 @@ class World
     this.target.show();
 
     this.seekTarget();
-
-    if (this.targetReached())
-    {
-      this.target = this.generateTarget();
-      this.reset();
-    }
+    this.manageScore();
   }
 
   reset()
@@ -380,5 +391,8 @@ class World
 
     this.goalFound = false;
     this.path = [];
+
+    this.updated = false;
+    this.current = this.start;
   }
 }

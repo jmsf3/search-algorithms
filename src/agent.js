@@ -15,7 +15,7 @@ class Agent
 
   show() 
   {
-    fill('green');
+    fill(0, 255, 0);
     noStroke();
     
     let X = this.x * this.size;
