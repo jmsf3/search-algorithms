@@ -34,6 +34,7 @@ class World
     this.current = this.start;
 
     this.score = 0;
+    this.font = loadFont('../res/fonts/PixeloidSans-mLxMm.ttf');
   }
 
   generateWorld()
@@ -393,8 +394,27 @@ class World
     }
 
     textSize(32);
+    textFont(this.font);
+
     fill('black');
     text(`SCORE: ${this.score}`, 5, 30);
+  }
+
+  showOptions()
+  {
+    textSize(32);
+    textFont(this.font);
+
+    fill('black');
+    text('BFS: B', 5, height - 5);
+
+    text('DFS: D', 5, height - 35);
+    text('UCS: U', 5, height - 65);
+
+    text('GREEDY: G', 5, height - 95);
+    text('A-STAR: A', 5, height - 125);
+    
+    text('RESET: R', 5, height - 155);
   }
 
   show()
@@ -422,6 +442,7 @@ class World
 
     this.seekTarget();
     this.manageScore();
+    this.showOptions();
   }
 
   reset()
