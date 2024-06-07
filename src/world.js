@@ -165,9 +165,7 @@ class World
 
   dfs()
   {
-    let n = this.frontier.length;
-
-    for (let i = 0; !this.goalFound && i < 4; i++)
+    if (!this.goalFound && this.frontier.length > 0)
     {
       let current = this.frontier.pop();
 
@@ -251,11 +249,6 @@ class World
         }
       }
     }
-  }
-
-  heuristic(a, b)
-  {
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
   }
 
   astar()
