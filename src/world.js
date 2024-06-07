@@ -17,19 +17,14 @@ class World
     this.frontier = [];
     this.frontier.push(this.start);
     
-    this.frontStar = [];
-    this.frontStar.push({
-      element: this.start,
-      cost: 0,
-      estimate: 0
-    });
-
-
     this.reached = new Set();
     this.reached.add(this.start);
 
     this.cameFrom = new Map();
     this.cameFrom.set(this.start, null);
+
+    this.costSoFar = new Map();
+    this.costSoFar.set(this.start, 0);
 
     this.goalFound = false;
     this.path = [];
@@ -177,49 +172,42 @@ class World
     // TODO
   }
 
-  heuristic(node) {
-    return Math.abs(node.x - this.target.x) + Math.abs(node.y - this.target.y);
+  heuristic(a, b)
+  {
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
   }
 
-  astar() {
-    //o loop continua enquanto houver nós na fronteira a serem explorados
-    let n = this.frontStar.length;
+  astar()
+  {
+    let n = this.frontier.length;
 
-    for (let i = 0; !this.goalFound && i < n/2; i++){ 
-        // a fronteira é ordenada com base na estimativa de custo total 
-        this.frontStar.sort((a, b) => a.estimate - b.estimate);
+    for (let i = 0; !this.goalFound && i < n; i++)
+    {
+      let current = this.frontier.shift();
 
-        //escolhendo o nó de menor custo
-        let current = this.frontStar.shift().element;
+      if (current == this.goal)
+      {
+        this.goalFound = true;
+        this.setPath();
+        break;
+      }
 
-        //checa se já chegou no objetivo
-        if (current === this.goal) {
-          this.goalFound = true;
-          this.setPath();
-          break;
-        }
+      for (let next of this.neighbors(current))
+      {
+        let nextCost = this.world[next.y][next.x].cost;
+        let newCost = this.costSoFar.get(current) + nextCost;
+        let priority = newCost + this.heuristic(next, this.goal); 
 
-        //add o nó aos explorados 
-        this.reached.add(current)
-
-
-        //gera possibilidades de vizinhos com base na pos atual
-        let neighbors = this.neighbors(current)
-
-        for (let i=0 ; i< neighbors.length; i++){
-          let next = neighbors[i];
-          let cost = next.cost + current.cost;
-
-          if(!this.reached.has(next)){
-            this.frontStar.push({
-              element: next,
-              cost: cost, 
-              estimate: cost + this.heuristic(next) });
-              this.reached.add(next)
-              this.cameFrom.set(next, current);
-          }
+        if (!this.reached.has(next))
+        {
+          this.frontier.push(next);
+          this.costSoFar.set(next, priority);
+          this.frontier.sort((a, b) => this.costSoFar.get(a) - this.costSoFar.get(b));
+          this.reached.add(next);
+          this.cameFrom.set(next, current);
         }
       }
+    }
   }
 
   search()
