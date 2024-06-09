@@ -2,10 +2,10 @@ let world;
 
 function setup()
 {
-  width = height = 600;
+  width = height = 640;
   createCanvas(width, height);
 
-  let chunkSize = 8;
+  let chunkSize = 16;
   let rows = ceil(height / chunkSize);
   let cols = ceil(width / chunkSize);
 
