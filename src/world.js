@@ -34,7 +34,7 @@ class World
     this.current = this.start;
 
     this.score = 0;
-    this.font = loadFont('../res/fonts/PixeloidSans-mLxMm.ttf');
+    this.font = loadFont('../res/font/PixeloidSans-mLxMm.ttf');
   }
 
   generateWorld()

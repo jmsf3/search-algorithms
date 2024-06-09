@@ -1,3 +1,36 @@
+# IF684-SearchAlgorithms
+Este projeto é uma demonstração prática das estratégias de busca que foram estudadas durante a disciplina de Sistemas Inteligentes do CIn-UFPE. As estratégias implementadas incluem Busca em Largura (BFS), Busca em Profundidade (DFS), Busca de Custo Uniforme (UCS), Busca Gulosa (Greedy) e Busca A* (A-Star). Sinta-se à vontade para explorar o código, fazer perguntas e contribuir com melhorias.
+
+## Busca em Largura (Breadth-First Search)
+
+A Busca em Largura é um algoritmo de busca que explora todos os vértices de um grafo em ordem de distância, começando pelo vértice inicial e expandindo os vértices vizinhos antes de passar para os vértices de próxima profundidade.
+
+![](../res/gif/bfs.gif)
+
+## Busca em Profundidade (Depth-First Search)
+
+A Busca em Profundidade é um algoritmo de busca que explora o grafo indo o mais fundo possível ao longo de cada ramo antes de retroceder.
+
+![](../res/gif/dfs.gif)
+
+## Busca de Custo Uniforme (Uniform Cost Search)
+
+A Busca de Custo Uniforme é um algoritmo de busca que leva em consideração o custo para chegar a um nó. Ele expande o nó de menor custo acumulado primeiro.
+
+![](../res/gif/ucs.gif)
+
+## Busca Gulosa (Greedy Search)
+
+A Busca Gulosa é um algoritmo de busca que utiliza uma função heurística para priorizar a expansão dos nós mais promissores, ou seja, aqueles que parecem levar mais rapidamente ao objetivo.
+
+![](../res/gif/greedy.gif)
+
+## Busca A* (A* Search)
+
+A Busca A* é um algoritmo de busca que combina os melhores aspectos da Busca de Custo Uniforme e da Busca Gulosa. Ele utiliza uma função heurística para estimar o custo até o objetivo e prioriza a expansão dos nós com o menor custo estimado total.
+
+![](../res/gif/astar.gif)
+
 # Como Executar
 Podemos facilmente executar um servidor local para rodar o projeto utilizando a extensão [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) para o VS Code.
 
@@ -24,9 +57,9 @@ O tipo do commit pode ser:
 - `fix` – ocorreu uma correção de bug.
 - `refactor` – código refatorado que não corrige um bug nem adiciona uma funcionalidade.
 - `docs` – atualizações na documentação, como o README ou outros arquivos markdown.
-- `style` – mudanças que não afetam o significado do código, provavelmente relacionadas à formatação do código, como espaços em branco, ponto e vírgula ausentes, e assim por diante.
+- `style` – mudanças que não afetam o significado do código, provavelmente relacionadas à formatação do código, como espaços em branco, pontos e vírgulas ausentes, e assim por diante.
 
-A linha de assunto do tipo de commit deve ser toda em letras minúsculas com um limite de 75 caracteres. Além disso, corpo opcional do commit deve ser usado para fornecer mais detalhes que não cabem nas limitações de caracteres da descrição da linha de assunto.
+A linha de assunto do tipo de commit deve ser toda em letras minúsculas com um limite de 75 caracteres. Além disso, o corpo opcional do commit deve ser usado para fornecer mais detalhes que não cabem nas limitações de caracteres da descrição da linha de assunto.
 
 ## Criação de Branches
 
