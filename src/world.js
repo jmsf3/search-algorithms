@@ -139,9 +139,7 @@ class World
 
   bfs()
   {
-    let n = this.frontier.length;
-
-    for (let i = 0; !this.goalFound && i < n; i++)
+    if (!this.goalFound && this.frontier.length > 0)
     {
       let current = this.frontier.shift();
 
@@ -149,7 +147,6 @@ class World
       {
         this.goalFound = true;
         this.setPath();
-        break;
       }
 
       for (let next of this.neighbors(current))
@@ -190,9 +187,7 @@ class World
 
   ucs()
   {
-    let n = this.frontier.length;
-
-    for (let i = 0; !this.goalFound && i < n; i++)
+    if (!this.goalFound && this.frontier.length > 0)
     {
       let current = this.frontier.shift();
 
@@ -200,7 +195,6 @@ class World
       {
         this.goalFound = true;
         this.setPath();
-        break;
       }
 
       for (let next of this.neighbors(current))
@@ -254,9 +248,7 @@ class World
 
   astar()
   {
-    let n = this.frontier.length;
-
-    for (let i = 0; !this.goalFound && i < n; i++)
+    if (!this.goalFound && this.frontier.length > 0)
     {
       let current = this.frontier.shift();
 
@@ -264,14 +256,13 @@ class World
       {
         this.goalFound = true;
         this.setPath();
-        break;
       }
 
       for (let next of this.neighbors(current))
       {
         let nextCost = this.world[next.y][next.x].cost;
         let newCost = this.costSoFar.get(current) + nextCost;
-        let priority = newCost + this.heuristic(next, this.goal); 
+        let priority = 0.80 * newCost + 0.20 * this.heuristic(next, this.goal);
 
         if (!this.reached.has(next))
         {
