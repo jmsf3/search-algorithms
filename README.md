@@ -1,4 +1,4 @@
-# IF684-SearchAlgorithms
+# Search Algorithms
 Este projeto é uma demonstração prática das estratégias de busca que foram estudadas durante a disciplina de Sistemas Inteligentes do CIn-UFPE. As estratégias implementadas incluem Busca em Largura (BFS), Busca em Profundidade (DFS), Busca de Custo Uniforme (UCS), Busca Gulosa (Greedy) e Busca A* (A-Star). Sinta-se à vontade para explorar o código, fazer perguntas e contribuir com melhorias.
 
 ## Busca em Largura (Breadth-First Search)
